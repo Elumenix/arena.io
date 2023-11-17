@@ -1,49 +1,69 @@
-//require('dotenv').config();
+// require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
-/*const compression = require('compression');
+
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+// const mongoose = require('mongoose');
+
+/* const compression = require('compression');
 const favicon = require('serve-favicon');
-const bodyParser = require('body-parser');*/
-const mongoose = require('mongoose');
-/*const expressHandlebars = require('express-handlebars');
+const bodyParser = require('body-parser'); */
+/* const expressHandlebars = require('express-handlebars');
 const helmet = require('helmet');
 const session = require('express-session');
 const RedisStore = require('connect-redis').default;
-const redis = require('redis');*/
+const redis = require('redis'); */
 
-//const router = require('./router.js');
-const port = process.env.PORT || process.env.NODE_PORT || 3000;
+// const router = require('./router.js');
 
-const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Arena';
+// const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Arena';
 
+const addPlayer = (socket) => {
 
-//mongoose.connect(dbURI).catch((err) => {
-  /*if (err) {
+};
+
+const addSpectator = (socket) => {
+
+};
+
+io.on('connection', (socket) => {
+  const { type } = socket.handshake.query;
+  console.log('User has connected: ', type);
+  switch (type) {
+    case 'player':
+      addPlayer(socket);
+      break;
+    case 'spectator':
+      addSpectator(socket);
+      break;
+    default:
+      console.log('Unknown user type, not doing anything.');
+  }
+});
+
+// mongoose.connect(dbURI).catch((err) => {
+/* if (err) {
     console.log('Could not connect to database');
     throw err;
-  }*/
+  } */
 
-  const app = express();
+// Everything under here should be deleted when redis is initialized
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve('client/index.html'));
+});
 
-  // Everything under here should be deleted when redis is initialized
-  app.get('/', function(req, res) {
-    res.sendFile(path.resolve('client/index.html'));
-  });
+// });
 
-  app.listen(port, (err) => {
-    if (err) { throw err; }
-    console.log(`Listening on port ${port}`);
-  });
-//});
-
-/*const redisClient = redis.createClient({
+/* const redisClient = redis.createClient({
   url: process.env.REDISCLOUD_URL,
 });
 
-redisClient.on('error', (err) => console.log('Redis Client Error', err));*/
+redisClient.on('error', (err) => console.log('Redis Client Error', err)); */
 
-/*redisClient.connect().then(() => {
+/* redisClient.connect().then(() => {
   const app = express();
 
   app.use(helmet());
@@ -73,4 +93,9 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err));*/
     if (err) { throw err; }
     console.log(`Listening on port ${port}`);
   });
-});*/
+}); */
+
+const ipaddress = process.env.IP || process.env.NODE_IP || '0.0.0.0';
+const serverport = process.env.PORT || process.env.NODE_PORT || 3000;
+http.listen(serverport, ipaddress);
+console.log(`Listening on ${ipaddress}:${serverport}`);
