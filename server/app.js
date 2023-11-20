@@ -51,9 +51,18 @@ io.on('connection', (socket) => {
   } */
 
 // Everything under here should be deleted when redis is initialized
-app.get('/', (req, res) => {
+app.use(express.static(__dirname + '/../client'));
+
+/*app.get('/', (req, res) => {
   res.sendFile(path.resolve('client/index.html'));
 });
+
+app.get('/js/canvas.js', (req, res) => {
+  res.sendFile(path.resolve('client/js/canvas.js'));
+});
+app.get('/js/app.js', (req, res) => {
+  res.sendFile(path.resolve('client/js/app.js'));
+});*/
 
 // });
 
