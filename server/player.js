@@ -1,7 +1,7 @@
 const MAX_SPEED = 4;
 const SPEED_DECREMENT = 0.5;
 
-exports.Player = class {
+module.exports = class {
   constructor(id) {
     this.id = id;
     this.hue = Math.round(Math.random() * 360);
@@ -11,9 +11,10 @@ exports.Player = class {
   }
 
   // Sets the initial data for the player in the game world
-  init(position) {
-    this.x = position.x;
-    this.y = position.y;
+  // These variables will change on each respawn
+  init(playerData) {
+    this.x = playerData.x;
+    this.y = playerData.y;
     this.target = {
       x: 0,
       y: 0,
@@ -40,11 +41,11 @@ exports.Player = class {
     const deltaY = this.speed * Math.sin(deg);
     const deltaX = this.speed * Math.cos(deg);
 
-    if (!isNaN(deltaY)) {
+    if (!deltaY.isNaN()) {
       this.y += deltaY;
     }
 
-    if (!isNaN(deltaX)) {
+    if (!deltaX.isNaN()) {
       this.x += deltaX;
     }
   }

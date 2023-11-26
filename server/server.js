@@ -1,13 +1,7 @@
 // require('dotenv').config();
 
-const path = require('path');
-const express = require('express');
+// const path = require('path');
 
-const app = express();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-
-const playerData = [];
 // const mongoose = require('mongoose');
 
 /* const compression = require('compression');
@@ -23,17 +17,80 @@ const redis = require('redis'); */
 
 // const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Arena';
 
-const addPlayer = (socket) => {
+const express = require('express');
 
+const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+const Player = require('./player');
+
+const sockets = {};
+const playerData = [];
+
+const addPlayer = (socket) => {
+  const currentPlayer = new Player(socket.id);
+
+  // This will actually run after respawn is called
+  socket.on('connected', (playerInfo) => {
+    console.log(`Player '${playerInfo.name}' has connected.`);
+
+    // return Math.floor(Math.random() * (to - from)) + from;
+    currentPlayer.init(
+      Math.floor(Math.random() * 600) - 300,
+      Math.floor(Math.random() * 600) - 300,
+    );
+
+    let len = playerData.length;
+
+    // Don't let the same player connect to the server twice
+    while (len--) {
+      if (playerData[len].id === currentPlayer.id) {
+        console.log('This player is already connected. Rejecting new connection.');
+        socket.disconnect();
+        return;
+      }
+    }
+
+    // Player is allowed to join the game
+    console.log(`'${playerInfo.name}' has joined the game!`);
+    sockets[playerInfo.id] = socket;
+    currentPlayer.clientData(playerInfo);
+    playerData.push(currentPlayer);
+  });
+
+  socket.on('respawn', () => {
+    let len = playerData.length;
+    let existed = false;
+
+    // If the player was already in the game, then remove them from the current players
+    while (len--) {
+      if (playerData[len].id === currentPlayer.id) {
+        existed = playerData.splice(len, 1) != null;
+        break;
+      }
+    }
+
+    socket.emit('welcome', currentPlayer, {
+      width: 5000,
+      height: 5000,
+    });
+
+    if (existed) {
+      console.log(`'${currentPlayer.name}' has respawned!`);
+    }
+  });
+
+  // More Player functions
 };
 
 const addSpectator = (socket) => {
-
+  socket.emit('Error Aversion');
 };
 
 io.on('connection', (socket) => {
   const { type } = socket.handshake.query;
-  console.log('User has connected: ', type);
+  // console.log('User has connected: ', type);
   switch (type) {
     case 'player':
       addPlayer(socket);
@@ -49,7 +106,7 @@ io.on('connection', (socket) => {
 const sendUpdates = () => {
   // Update spectators
   playerData.forEach((player) => {
-    socket[player.id].emit('movePlayer', playerData);
+    sockets[player.id].emit('movePlayer', playerData);
   });
 };
 
