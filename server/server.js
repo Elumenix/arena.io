@@ -6,6 +6,8 @@ const express = require('express');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+
+const playerData = [];
 // const mongoose = require('mongoose');
 
 /* const compression = require('compression');
@@ -44,6 +46,22 @@ io.on('connection', (socket) => {
   }
 });
 
+const sendUpdates = () => {
+  // Update spectators
+  playerData.forEach((player) => {
+    socket[player.id].emit('movePlayer', playerData);
+  });
+};
+
+setInterval(sendUpdates, 25);
+
+app.use(express.static(`${__dirname}/../client`));
+
+const ipaddress = process.env.IP || process.env.NODE_IP || '0.0.0.0';
+const serverport = process.env.PORT || process.env.NODE_PORT || 3000;
+http.listen(serverport, ipaddress);
+console.log(`Listening on ${ipaddress}:${serverport}`);
+
 // mongoose.connect(dbURI).catch((err) => {
 /* if (err) {
     console.log('Could not connect to database');
@@ -51,9 +69,8 @@ io.on('connection', (socket) => {
   } */
 
 // Everything under here should be deleted when redis is initialized
-app.use(express.static(__dirname + '/../client'));
 
-/*app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
   res.sendFile(path.resolve('client/index.html'));
 });
 
@@ -62,7 +79,7 @@ app.get('/js/canvas.js', (req, res) => {
 });
 app.get('/js/app.js', (req, res) => {
   res.sendFile(path.resolve('client/js/app.js'));
-});*/
+}); */
 
 // });
 
@@ -103,8 +120,3 @@ redisClient.on('error', (err) => console.log('Redis Client Error', err)); */
     console.log(`Listening on port ${port}`);
   });
 }); */
-
-const ipaddress = process.env.IP || process.env.NODE_IP || '0.0.0.0';
-const serverport = process.env.PORT || process.env.NODE_PORT || 3000;
-http.listen(serverport, ipaddress);
-console.log(`Listening on ${ipaddress}:${serverport}`);
