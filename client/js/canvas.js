@@ -19,8 +19,8 @@ ctx.fillRect(20, 20, 140, 100);*/
 
 
 myCanvas.onmousemove = (mouse) => {
-    mousePos.x = mouse.clientX;
-    mousePos.y = mouse.clientY;
+    mousePos.x = mouse.clientX - ctx.canvas.width / 2;
+    mousePos.y = mouse.clientY - ctx.canvas.height / 2;
 
     console.log(`(x:${mousePos.x}, y:${mousePos.y})`);
 }
