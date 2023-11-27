@@ -90,8 +90,7 @@ const addPlayer = (socket) => {
     //console.log(`Current: ${currentPlayer.x}, Target: ${target.x}`);
     // No need to force the server to update information if it isn't necessary
     if (target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
-      currentPlayer.x = target.x;
-      currentPlayer.y = target.y;
+      currentPlayer.target = target;
     }
   });
 
@@ -122,6 +121,7 @@ io.on('connection', (socket) => {
 const sendUpdates = () => {
   // Update spectators
   playerData.forEach((player) => {
+    player.move();
     sockets[player.id].emit('movePlayer', playerData);
   });
 };

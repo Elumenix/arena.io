@@ -37,8 +37,8 @@ const setupSocket = (socket) => {
 
 
         // TODO: Have this be sent by the server
-        screenWidth = 5000;
-        screenHeight = 5000;
+        //screenWidth = 5000;
+        //screenHeight = 5000;
 
         // Let the server know that the client can hear it's responses
         // This will let the server know to put the player in the game world
@@ -75,13 +75,30 @@ const gameLoop = () => {
     // request the next frame after this one finishes
     loopHandler = window.requestAnimationFrame(gameLoop);
 
+    // establish borders
+    let borders = { // Position of the borders on the screen
+        left: screenWidth / 2 - player.x,
+        right: screenWidth / 2 + 5000 - player.x,
+        top: screenHeight / 2 - player.y,
+        bottom: screenHeight / 2 + 5000 - player.y
+    }
+
 
     // Draw Background
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, screenWidth, screenHeight);
 
 
-
+    // draw borders
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#000000'
+    ctx.beginPath()
+    ctx.moveTo(borders.left, borders.top);
+    ctx.lineTo(borders.right, borders.top);
+    ctx.lineTo(borders.right, borders.bottom);
+    ctx.lineTo(borders.left, borders.bottom);
+    ctx.closePath()
+    ctx.stroke();
 
     // Draw grid
     ctx.lineWidth = 1;
@@ -111,7 +128,7 @@ const gameLoop = () => {
     if (otherPlayers) {
         otherPlayers.forEach((opponent) => {
             ctx.beginPath();
-            ctx.arc(opponent.x - player.x + ctx.canvas.width / 2, opponent.y - player.y + ctx.canvas.height / 2, 5, 0, 2 * Math.PI);
+            ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, 5, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
@@ -121,8 +138,8 @@ const gameLoop = () => {
 
     // draw current player
     ctx.beginPath();
-    ctx.arc(ctx.canvas.height / 2, ctx.canvas.width / 2, 5, 0, 2 * Math.PI);
-    console.log(`(${player.x}, ${player.y})`);
+    ctx.arc(screenWidth / 2, screenHeight / 2, 5, 0, 2 * Math.PI);
+    //console.log(`(${player.x}, ${player.y})`);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();

@@ -12,15 +12,16 @@ module.exports = class {
 
   // Sets the initial data for the player in the game world
   // These variables will change on each respawn
-  init(playerData) {
-    this.x = playerData.x;
-    this.y = playerData.y;
+  init(x, y) {
+    //console.log(playerData);
+    this.x = x;
+    this.y = y;
     this.target = {
       x: 0,
       y: 0,
     };
 
-    this.speed = 0;
+    this.speed = 3;
   }
 
   // Sets data from client needed for server side operations
@@ -31,8 +32,11 @@ module.exports = class {
   }
 
   move() {
-    // var dist = Math.hypot(this.target.y, this.target.x);
+    //console.log(newTarget);
+
+    //var dist = Math.hypot(newTarget.y, newTarget.x);
     const deg = Math.atan2(this.target.y, this.target.x);
+    console.log(deg);
 
     if (this.speed > MAX_SPEED) {
       this.speed -= SPEED_DECREMENT;
@@ -41,12 +45,14 @@ module.exports = class {
     const deltaY = this.speed * Math.sin(deg);
     const deltaX = this.speed * Math.cos(deg);
 
-    if (!deltaY.isNaN()) {
-      this.y += deltaY;
-    }
+    //console.log(deltaY);
 
-    if (!deltaX.isNaN()) {
+    //if (!deltaY.isNaN()) {
+      this.y += deltaY;
+    //}
+
+    //if (!deltaX.isNaN()) {
       this.x += deltaX;
-    }
+    //}
   }
 };

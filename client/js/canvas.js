@@ -22,7 +22,14 @@ myCanvas.onmousemove = (mouse) => {
     mousePos.x = mouse.clientX - ctx.canvas.width / 2;
     mousePos.y = mouse.clientY - ctx.canvas.height / 2;
 
-    console.log(`(x:${mousePos.x}, y:${mousePos.y})`);
+    /*if (mousePos.x === NaN) {
+        mousePos.x = 0;
+    }
+
+    if (mousePos.y === NaN) {
+        mousePos.y = 0;
+    }
+    console.log(`(x:${mouse.clientX}, y:${mouse.clientY})`);*/
 }
 
 
