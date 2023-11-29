@@ -21,7 +21,7 @@ module.exports = class {
       y: 0,
     };
 
-    this.speed = 10;
+    this.speed = 25;
   }
 
   // Sets data from client needed for server side operations
@@ -41,9 +41,9 @@ module.exports = class {
     if (this.target.x) {
       const deg = Math.atan2(this.target.y, this.target.x);
 
-      if (this.speed > MAX_SPEED) {
+      /*if (this.speed > MAX_SPEED) {
         this.speed -= SPEED_DECREMENT;
-      }
+      }*/
 
       const deltaY = this.speed * Math.sin(deg);
       const deltaX = this.speed * Math.cos(deg);

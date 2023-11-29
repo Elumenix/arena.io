@@ -45,6 +45,13 @@ const setupSocket = (socket) => {
         socket.emit('connected', player);
     });
 
+    window.onresize = () => {
+        ctx.canvas.width = player.screenWidth = screenWidth = window.innerWidth;
+        ctx.canvas.height = player.screenHeight = screenHeight = window.innerHeight;
+
+        socket.emit('windowResized', {screenWidth: screenWidth, screenHeight: screenHeight});
+    }
+
 
     socket.on('movePlayer', (playerData) => {
         //console.log(player.id)

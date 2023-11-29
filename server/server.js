@@ -93,6 +93,11 @@ const addPlayer = (socket) => {
     }
   });
 
+  socket.on('windowResized', (screenSize) => {
+    currentPlayer.screenWidth = screenSize.screenWidth;
+    currentPlayer.screenHeight = screenSize.screenHeight;
+  });
+
   // More Player functions
 };
 
@@ -118,6 +123,7 @@ io.on('connection', (socket) => {
 // Sends the current known location of all players
 // and the game board to all currently connected clients
 const sendUpdates = () => {
+
   // Update spectators
   playerData.forEach((player) => {
     player.move();
