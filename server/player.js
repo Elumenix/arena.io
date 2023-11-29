@@ -13,7 +13,7 @@ module.exports = class {
   // Sets the initial data for the player in the game world
   // These variables will change on each respawn
   init(x, y) {
-    //console.log(playerData);
+    // console.log(playerData);
     this.x = x;
     this.y = y;
     this.target = {
@@ -32,27 +32,26 @@ module.exports = class {
   }
 
   move() {
-    //console.log(newTarget);
+    // console.log(newTarget);
 
-    //var dist = Math.hypot(newTarget.y, newTarget.x);
-    const deg = Math.atan2(this.target.y, this.target.x);
-    console.log(deg);
+    // var dist = Math.hypot(newTarget.y, newTarget.x);
+    console.log(this.target);
 
-    if (this.speed > MAX_SPEED) {
-      this.speed -= SPEED_DECREMENT;
+    // There may be undefined or NaN errors if somehow entering this function without variables in the target
+    if (this.target.x) {
+      const deg = Math.atan2(this.target.y, this.target.x);
+
+      if (this.speed > MAX_SPEED) {
+        this.speed -= SPEED_DECREMENT;
+      }
+
+      const deltaY = this.speed * Math.sin(deg);
+      const deltaX = this.speed * Math.cos(deg);
+
+      if (deltaY !== NaN && deltaX != NaN) {
+        this.y += deltaY;
+        this.x += deltaX;
+      }
     }
-
-    const deltaY = this.speed * Math.sin(deg);
-    const deltaX = this.speed * Math.cos(deg);
-
-    //console.log(deltaY);
-
-    //if (!deltaY.isNaN()) {
-      this.y += deltaY;
-    //}
-
-    //if (!deltaX.isNaN()) {
-      this.x += deltaX;
-    //}
   }
 };

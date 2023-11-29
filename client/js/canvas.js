@@ -17,20 +17,25 @@ ctx.fillRect(20, 20, 140, 100);*/
     ctx.fillRect(20, 20, 140, 100);
 }*/
 
+const mouseMovement = (mouse, type) => {
 
-myCanvas.onmousemove = (mouse) => {
-    mousePos.x = mouse.clientX - ctx.canvas.width / 2;
-    mousePos.y = mouse.clientY - ctx.canvas.height / 2;
-
-    /*if (mousePos.x === NaN) {
-        mousePos.x = 0;
+    // Different types are used because either button or buttons needs to
+    // be checked depending on the event that is firing
+    if ((mouse.buttons === 1 && type === 0) || (mouse.button === 0 && type === 1) || (mouse.buttons === 0 && type === 2)) {
+        mousePos.x = mouse.clientX - ctx.canvas.width / 2;
+        mousePos.y = mouse.clientY - ctx.canvas.height / 2;
     }
-
-    if (mousePos.y === NaN) {
+    else {
+        mousePos.x = 0;
         mousePos.y = 0;
     }
-    console.log(`(x:${mouse.clientX}, y:${mouse.clientY})`);*/
 }
+
+
+// Click or move should check for mouse movement
+myCanvas.addEventListener('mousemove', (event) => mouseMovement(event, 0));
+myCanvas.addEventListener('mousedown', (event) => mouseMovement(event, 1));
+myCanvas.addEventListener('mouseup', (event) => mouseMovement(event, 2));
 
 
 export { ctx, mousePos };
