@@ -21,7 +21,7 @@ module.exports = class {
       y: 0,
     };
 
-    this.speed = 3;
+    this.speed = 10;
   }
 
   // Sets data from client needed for server side operations
@@ -35,9 +35,9 @@ module.exports = class {
     // console.log(newTarget);
 
     // var dist = Math.hypot(newTarget.y, newTarget.x);
-    console.log(this.target);
 
-    // There may be undefined or NaN errors if somehow entering this function without variables in the target
+    // There may be undefined or NaN errors if somehow
+    // entering this function without variables in the target
     if (this.target.x) {
       const deg = Math.atan2(this.target.y, this.target.x);
 
@@ -48,7 +48,7 @@ module.exports = class {
       const deltaY = this.speed * Math.sin(deg);
       const deltaX = this.speed * Math.cos(deg);
 
-      if (deltaY !== NaN && deltaX != NaN) {
+      if (!Number.isNaN(deltaY) && !Number.isNaN(deltaX)) {
         this.y += deltaY;
         this.x += deltaX;
       }

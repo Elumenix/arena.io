@@ -128,7 +128,7 @@ const gameLoop = () => {
     if (otherPlayers) {
         otherPlayers.forEach((opponent) => {
             ctx.beginPath();
-            ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, 5, 0, 2 * Math.PI);
+            ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, 10, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
@@ -138,7 +138,7 @@ const gameLoop = () => {
 
     // draw current player
     ctx.beginPath();
-    ctx.arc(screenWidth / 2, screenHeight / 2, 5, 0, 2 * Math.PI);
+    ctx.arc(screenWidth / 2, screenHeight / 2, 10, 0, 2 * Math.PI);
     //console.log(`(${player.x}, ${player.y})`);
     ctx.closePath();
     ctx.fill();

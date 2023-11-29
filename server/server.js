@@ -81,13 +81,12 @@ const addPlayer = (socket) => {
     }
   });
 
-
   // The server recieves the players current location from the client and updates it internally
   socket.on('recieveUpdate', (target) => {
     // This will be used to kick inactive sockets later
     currentPlayer.lastUpdate = new Date().getTime();
 
-    //console.log(`Current: ${currentPlayer.x}, Target: ${target.x}`);
+    // console.log(`Current: ${currentPlayer.x}, Target: ${target.x}`);
     // No need to force the server to update information if it isn't necessary
     if (target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
       currentPlayer.target = target;
@@ -116,8 +115,8 @@ io.on('connection', (socket) => {
   }
 });
 
-
-// Sends the current known location of all players and the game board to all currently connected clients
+// Sends the current known location of all players
+// and the game board to all currently connected clients
 const sendUpdates = () => {
   // Update spectators
   playerData.forEach((player) => {
@@ -125,7 +124,6 @@ const sendUpdates = () => {
     sockets[player.id].emit('movePlayer', playerData);
   });
 };
-
 
 setInterval(sendUpdates, 25);
 
