@@ -1,5 +1,5 @@
-const MAX_SPEED = 4;
-const SPEED_DECREMENT = 0.5;
+// const MAX_SPEED = 4;
+// const SPEED_DECREMENT = 0.5;
 
 module.exports = class {
   constructor(id) {
@@ -41,9 +41,9 @@ module.exports = class {
     if (this.target.x) {
       const deg = Math.atan2(this.target.y, this.target.x);
 
-      /*if (this.speed > MAX_SPEED) {
+      /* if (this.speed > MAX_SPEED) {
         this.speed -= SPEED_DECREMENT;
-      }*/
+      } */
 
       const deltaY = this.speed * Math.sin(deg);
       const deltaX = this.speed * Math.cos(deg);

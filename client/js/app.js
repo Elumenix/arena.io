@@ -108,7 +108,7 @@ const gameLoop = () => {
     ctx.stroke();
 
     // Draw grid
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 2;
     ctx.strokeStyle = "#000000";
     ctx.globalAlpha = 0.15;
     ctx.beginPath();
