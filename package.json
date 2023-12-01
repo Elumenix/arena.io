@@ -4,12 +4,9 @@
   "description": "",
   "main": "./server/server.js",
   "scripts": {
-    "webpack": "webpack",
-    "webpackWatch": "webpack watch",
     "start": "node ./server/server.js",
     "pretest": "eslint ./server --fix",
-    "test": "echo \"Tests complete\"",
-    "heroku-postbuild": "webpack"
+    "test": "echo \"Tests complete\""
   },
   "author": "Elumenix",
   "license": "UNLICENSED",
