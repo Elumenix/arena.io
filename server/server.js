@@ -1,77 +1,16 @@
-require('dotenv').config();
-
-// Middleware
-const helmet = require('helmet');
-const compression = require('compression');
-const bodyParser = require('body-parser');
-
-// Express & File Redirects
-const express = require('express');
-const expressHandlebars = require('express-handlebars');
-const session = require('express-session');
-const path = require('path');
-const favicon = require('serve-favicon');
-
-const app = express();
-
-// Databases
-const mongoose = require('mongoose');
-const RedisStore = require('connect-redis').default;
-const redis = require('redis');
-
-// IO & various
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+// connections will set up the database connections for the server
+const { init } = require('./connections');
 const Player = require('./player');
 
-const dbURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1/Arena';
-
-mongoose.connect(dbURI).catch((err) => {
-  if (err) {
-    console.log('Could not connect to database');
-    throw err;
-  }
-});
-
-const redisClient = redis.createClient({
-  url: process.env.REDISCLOUD_URL,
-});
-
-redisClient.on('error', (err) => console.log('Redis Client Error', err));
-
-// All actual server setup is done after connection to the redis database
-redisClient.connect().then(() => {
-  app.use(helmet({ // The inner block can be deleted after webpack is implemented
-    contentSecurityPolicy: {
-      directives: {
-        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-        "script-src": ["'self'", "https://cdn.socket.io"],
-      },
-    },
-  }));
-  app.use(express.static(path.resolve(`${__dirname}/../client`))); // Serve all client files
-  app.use(favicon(path.resolve(`${__dirname}/../hosted/favicon.png`))); // Serve favicon correctly
-  app.use(compression());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
-
-  app.use(session({
-    key: 'sessionid',
-    store: new RedisStore({
-      client: redisClient,
-    }),
-    secret: process.env.Session_Secret,
-    resave: false,
-    saveUninitialized: false,
-  }));
-
-  app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
-  app.set('view engine', 'handlebars');
-  app.set('views', `${__dirname}/../views`);
+// Connect to all the databases, then continue
+init().then(({ createServer }) => {
+  // The game servers get created
+  const { server, io } = createServer();
 
   const sockets = {};
   const playerData = [];
 
+  // Individual player functions are within this block
   const addPlayer = (socket) => {
     const currentPlayer = new Player(socket.id);
 
@@ -146,6 +85,7 @@ redisClient.connect().then(() => {
   };
 
   const addSpectator = (socket) => {
+    // This isn't implemented yet
     socket.emit('Error Aversion');
   };
 
@@ -178,6 +118,6 @@ redisClient.connect().then(() => {
 
   const ipaddress = process.env.IP || process.env.NODE_IP || '0.0.0.0';
   const serverport = process.env.PORT || process.env.NODE_PORT || 3000;
-  http.listen(serverport, ipaddress);
+  server.listen(serverport, ipaddress);
   console.log(`Listening on ${ipaddress}:${serverport}`);
-});
+}).catch(console.error);
