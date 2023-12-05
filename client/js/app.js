@@ -49,7 +49,7 @@ const setupSocket = (socket) => {
         ctx.canvas.width = player.screenWidth = screenWidth = window.innerWidth;
         ctx.canvas.height = player.screenHeight = screenHeight = window.innerHeight;
 
-        socket.emit('windowResized', {screenWidth: screenWidth, screenHeight: screenHeight});
+        socket.emit('windowResized', { screenWidth: screenWidth, screenHeight: screenHeight });
     }
 
 
@@ -165,18 +165,37 @@ const startGame = (type) => {
     if (!socket) {
         socket = io({ query: "type=" + type });
         setupSocket(socket);
+
+        //setTimeout(startGame, 400, 'player');
+
+        var prom = fetch('/login', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((res) => {
+            console.log(res);
+
+            return res.text()
+        }).then((data) => {
+            console.log(data);
+
+            let loginPage = document.createElement('div');
+            loginPage.innerHTML = data;
+            loginPage.classList.add('login');
+            document.body.appendChild(loginPage);
+        })
     }
+    else {
 
-    // If the server recieves this, then the connection is successful and the player can spawn
-    // The response will be the welcome call at the top of setupSocket
-    socket.emit('respawn');
+        // If the server recieves this, then the connection is successful and the player can spawn
+        // The response will be the welcome call at the top of setupSocket
+        socket.emit('respawn');
 
-    // Start the animation loop
-    gameLoop();
+        // Start the animation loop
+        gameLoop();
+    }
 }
 
 // This will probably be attatched to a button instead of being run immediately in the code
 startGame('player');
-
-/*ctx.fillStyle = "blue";
-ctx.fillRect(50, 40, 190, 40);*/
