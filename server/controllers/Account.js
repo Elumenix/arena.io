@@ -1,6 +1,6 @@
 const { Account } = require('../models/Account');
 
-const loginPage = (req, res) => res.render('login');
+const loginPage = (req, res) => res.render('index');
 
 const logout = (req, res) => {
   req.session.destroy();

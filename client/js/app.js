@@ -166,40 +166,16 @@ const startGame = (type) => {
         socket = io({ query: "type=" + type });
         setupSocket(socket);
 
-        //setTimeout(startGame, 400, 'player');
 
         var prom = fetch('/login', {
             method: 'GET',
         }).then((res) => {
-            console.log(res);
-
             return res.text()
         }).then((data) => {
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = data;
-
-            // Extract the script tag
-            let scriptTag = tempDiv.querySelector('script');
-
-            // If a script tag was found
-            if (scriptTag) {
-                // Save the src attribute
-                let scriptSrc = scriptTag.src;
-
-                // Remove the script tag from the fetched HTML
-                scriptTag.parentNode.removeChild(scriptTag);
-
-                // Create a new div to hold the fetched HTML
-                let loginPage = document.createElement('div');
-                loginPage.innerHTML = tempDiv.innerHTML;
-                loginPage.classList.add('login');
-                document.body.appendChild(loginPage);
-
-                // Create a new script element
-                let script = document.createElement('script');
-                script.src = scriptSrc;
-                document.body.appendChild(script);
-            }
+            var newDiv = document.createElement('div');
+            newDiv.classList.add('login');
+            document.body.appendChild(newDiv);
+            newDiv.innerHTML = data;
         });
     }
     else {

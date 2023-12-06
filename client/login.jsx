@@ -106,4 +106,4 @@ const init = () => {
 };
 
 console.log("This script works");
-window.onload = init;
+init();
