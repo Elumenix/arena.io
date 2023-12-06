@@ -170,21 +170,37 @@ const startGame = (type) => {
 
         var prom = fetch('/login', {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
         }).then((res) => {
             console.log(res);
 
             return res.text()
         }).then((data) => {
-            console.log(data);
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = data;
 
-            let loginPage = document.createElement('div');
-            loginPage.innerHTML = data;
-            loginPage.classList.add('login');
-            document.body.appendChild(loginPage);
-        })
+            // Extract the script tag
+            let scriptTag = tempDiv.querySelector('script');
+
+            // If a script tag was found
+            if (scriptTag) {
+                // Save the src attribute
+                let scriptSrc = scriptTag.src;
+
+                // Remove the script tag from the fetched HTML
+                scriptTag.parentNode.removeChild(scriptTag);
+
+                // Create a new div to hold the fetched HTML
+                let loginPage = document.createElement('div');
+                loginPage.innerHTML = tempDiv.innerHTML;
+                loginPage.classList.add('login');
+                document.body.appendChild(loginPage);
+
+                // Create a new script element
+                let script = document.createElement('script');
+                script.src = scriptSrc;
+                document.body.appendChild(script);
+            }
+        });
     }
     else {
 

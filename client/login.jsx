@@ -84,22 +84,26 @@ const init = () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
 
-    loginButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        ReactDOM.render(<LoginWindow />,
-            document.getElementById('content'));
+    /*loginButton.addEventListener('click', (e) => {
+        e.preventDefault();*/
+        const loginDiv = document.createElement('div');
+        document.getElementById('content').appendChild(loginDiv);
+        ReactDOM.render(<LoginWindow />, loginDiv);
         return false;
-    });
+    //});
 
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
-        ReactDOM.render(<SignupWindow />,
-            document.getElementById('content'));
+        const signupDiv = document.createElement('div');
+        document.getElementById('content').appendChild(signupDiv);
+        ReactDOM.render(<SignupWindow />, signupDiv);
         return false;
     });
 
-    ReactDOM.render(<LoginWindow />,
-        document.getElementById('content'));
+    const initialDiv = document.createElement('div');
+    document.getElementById('content').appendChild(initialDiv);
+    ReactDOM.render(<LoginWindow />, initialDiv);
 };
 
+console.log("This script works");
 window.onload = init;
