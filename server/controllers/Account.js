@@ -1,7 +1,5 @@
 const { Account } = require('../models/Account');
 
-const loginPage = (req, res) => res.render('index');
-
 const logout = (req, res) => {
   req.session.destroy();
 
@@ -58,7 +56,6 @@ const signup = async (req, res) => {
 };
 
 module.exports = {
-  loginPage,
   login,
   logout,
   signup,

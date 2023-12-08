@@ -1,0 +1,12 @@
+.login {
+    position: absolute;
+    top:0
+}
+
+html, body {
+    overflow: hidden;
+}
+
+body {
+    margin: 0px;
+}

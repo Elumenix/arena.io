@@ -1,10 +1,6 @@
-// Use this when switching to webpack
-/*var canvas = require('./canvas.js');
-var ctx = canvas.ctx;
-var io = require('socket.io-client');*/
-
 import { ctx, mousePos } from './canvas.js';
-import { io } from 'https://cdn.socket.io/4.4.1/socket.io.esm.min.js';
+var io = require('socket.io-client');
+
 
 var loopHandler;
 var playerSocket;
@@ -167,16 +163,8 @@ const startGame = (type) => {
         setupSocket(socket);
 
 
-        var prom = fetch('/login', {
-            method: 'GET',
-        }).then((res) => {
-            return res.text()
-        }).then((data) => {
-            var newDiv = document.createElement('div');
-            newDiv.classList.add('login');
-            document.body.appendChild(newDiv);
-            newDiv.innerHTML = data;
-        });
+        // Get login.jsx
+        console.log('Works to here');
     }
     else {
 

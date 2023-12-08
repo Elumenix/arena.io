@@ -84,13 +84,13 @@ const init = () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
 
-    /*loginButton.addEventListener('click', (e) => {
-        e.preventDefault();*/
+    loginButton.addEventListener('click', (e) => {
+        e.preventDefault();
         const loginDiv = document.createElement('div');
         document.getElementById('content').appendChild(loginDiv);
         ReactDOM.render(<LoginWindow />, loginDiv);
         return false;
-    //});
+    });
 
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();

@@ -54,8 +54,7 @@ module.exports.init = () => new Promise((resolve, reject) => {
     }));
 
     // Figure this out, assets only might be correct
-    app.use(express.static(path.resolve(`${__dirname}/../client`)));
-    app.use('/assets' ,express.static(path.resolve(`${__dirname}/../hosted`)));
+    app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted`)));
 
     app.use(favicon(path.resolve(`${__dirname}/../hosted/favicon.png`)));
     app.use(compression());
