@@ -165,6 +165,7 @@ const startGame = (type) => {
 
         // Get login.jsx
         console.log('Works to here');
+        console.log('question');
     }
     else {
 
