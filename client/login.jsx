@@ -81,18 +81,18 @@ const SignupWindow = (props) => {
 };
 
 const init = () => {
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
+    //const loginButton = document.getElementById('loginButton');
+    //const signupButton = document.getElementById('signupButton');
 
-    loginButton.addEventListener('click', (e) => {
-        e.preventDefault();
+    /*loginButton.addEventListener('click', (e) => {
+        e.preventDefault();*/
         const loginDiv = document.createElement('div');
         document.getElementById('content').appendChild(loginDiv);
         ReactDOM.render(<LoginWindow />, loginDiv);
-        return false;
-    });
+        //return false;
+    //});
 
-    signupButton.addEventListener('click', (e) => {
+    /*signupButton.addEventListener('click', (e) => {
         e.preventDefault();
         const signupDiv = document.createElement('div');
         document.getElementById('content').appendChild(signupDiv);
@@ -102,8 +102,7 @@ const init = () => {
 
     const initialDiv = document.createElement('div');
     document.getElementById('content').appendChild(initialDiv);
-    ReactDOM.render(<LoginWindow />, initialDiv);
+    ReactDOM.render(<LoginWindow />, initialDiv);*/
 };
 
-console.log("This script works");
 init();
