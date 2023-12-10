@@ -1,11 +1,10 @@
-const { Account } = require('../models/Account');
+const models = require('../models');
+
+const { Account } = models;
 
 const logout = (req, res) => {
   req.session.destroy();
 
-  // One of these are probably correct, testing needed
-  /*
-    res.loggedIn = false; */
   res.redirect('/');
 };
 
@@ -24,11 +23,12 @@ const login = (req, res) => {
 
     req.session.account = Account.toAPI(account);
 
-    return res.json({ loggedIn: true });
+    return res.json({ redirect: '/menu' });
   });
 };
 
 const signup = async (req, res) => {
+  console.log(Account);
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
   const pass2 = `${req.body.pass2}`;
@@ -42,11 +42,16 @@ const signup = async (req, res) => {
   }
 
   try {
+    console.log('Check 1');
     const hash = await Account.generateHash(pass);
+    console.log('Check 2');
     const newAccount = new Account({ username, password: hash });
+    console.log('Check 3');
     await newAccount.save();
+    console.log('Check 4');
     req.session.account = Account.toAPI(newAccount);
-    return res.json({ loggedIn: true });
+    console.log('Check 5');
+    return res.json({ redirect: '/menu' });
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use!' });

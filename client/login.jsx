@@ -81,16 +81,49 @@ const SignupForm = (props) => {
 };
 
 
+
 const LoginWindow = () => {
     const [isLogin, setIsLogin] = React.useState(true);
+    const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
+
+
+    /*const checkLoginStatus = () => {
+        return fetch('/menu')
+            .then((response) => response.json())
+            .then(async (data) => {
+                if (data.loggedIn === true) {
+                    await setIsUserLoggedIn(true);
+                } else {
+                    await setIsUserLoggedIn(false);
+                }
+            });
+    };*/
+
+    // On the first frame of this being rendered, client checks if user is logged in
+    React.useEffect(async () => {
+        await fetch('/menu')
+            .then((response) => response.json())
+            .then(async (data) => {
+                if (data.loggedIn === true) {
+                    document.querySelector("#loginWindow").hidden = true;
+
+                    await setIsUserLoggedIn(true);
+                } else {
+                    await setIsUserLoggedIn(false);
+                }
+            });
+
+        
+
+    }, []);
 
     return (
         <div id="loginWindow">
             <div id="buttonTabs">
-                <button onClick={() => setIsLogin(true)} style={{backgroundColor: isLogin ? 'lightgray' : 'dimgray'}}>
+                <button onClick={() => setIsLogin(true)} style={{ backgroundColor: isLogin ? 'lightgray' : 'dimgray' }}>
                     Login
                 </button>
-                <button onClick={() => setIsLogin(false)} style={{backgroundColor: !isLogin ? 'lightgray' : 'dimgray'}}>
+                <button onClick={() => setIsLogin(false)} style={{ backgroundColor: !isLogin ? 'lightgray' : 'dimgray' }}>
                     Sign Up
                 </button>
             </div>
@@ -106,9 +139,9 @@ const init = () => {
     /*loginButton.addEventListener('click', (e) => {
         e.preventDefault();*/
 
-    ReactDOM.render(<LoginWindow />,  document.getElementById('content'));
+    ReactDOM.render(<LoginWindow />, document.getElementById('content'));
 
-    
+
     //return false;
     //});
 

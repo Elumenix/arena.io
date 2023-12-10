@@ -1,13 +1,14 @@
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
-    // return res.redirect('/');
+    return res.redirect('/');
   }
   return next();
 };
 
+// Made obsolete. Client react components now make this request instead
 const requiresLogout = (req, res, next) => {
   if (req.session.account) {
-    // return res.redirect('/maker');
+    return res.redirect('/menu');
   }
 
   return next();
