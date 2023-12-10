@@ -42,7 +42,7 @@ const handleSignup = (e) => {
     return false;
 }
 
-const LoginWindow = (props) => {
+const LoginForm = (props) => {
     return (
         <form id="loginForm"
             name="loginForm"
@@ -55,12 +55,12 @@ const LoginWindow = (props) => {
             <input id="user" type="text" name="username" placeholder="username" />
             <label htmlFor="pass">Password: </label>
             <input id="pass" type="password" name="pass" placeholder="password" />
-            <input className="formSubmit" type="submit" value="Sign in" />
+            <input className="formSubmit" type="submit" value="Login" />
         </form>
     );
 };
 
-const SignupWindow = (props) => {
+const SignupForm = (props) => {
     return (
         <form id="signupForm"
             name="signupForm"
@@ -73,12 +73,31 @@ const SignupWindow = (props) => {
             <input id="user" type="text" name="username" placeholder="username" />
             <label htmlFor="pass">Password: </label>
             <input id="pass" type="password" name="pass" placeholder="password" />
-            <label htmlFor="pass">Password: </label>
+            <label htmlFor="pass">Confirm Password: </label>
             <input id="pass2" type="password" name="pass2" placeholder="retype password" />
             <input className="formSubmit" type="submit" value="Sign up" />
         </form>
     );
 };
+
+
+const LoginWindow = () => {
+    const [isLogin, setIsLogin] = React.useState(true);
+
+    return (
+        <div id="loginWindow">
+            <div id="buttonTabs">
+                <button onClick={() => setIsLogin(true)} style={{backgroundColor: isLogin ? 'lightgray' : 'dimgray'}}>
+                    Login
+                </button>
+                <button onClick={() => setIsLogin(false)} style={{backgroundColor: !isLogin ? 'lightgray' : 'dimgray'}}>
+                    Sign Up
+                </button>
+            </div>
+            {isLogin ? <LoginForm /> : <SignupForm />}
+        </div>
+    );
+}
 
 const init = () => {
     //const loginButton = document.getElementById('loginButton');
@@ -86,10 +105,11 @@ const init = () => {
 
     /*loginButton.addEventListener('click', (e) => {
         e.preventDefault();*/
-        const loginDiv = document.createElement('div');
-        document.getElementById('content').appendChild(loginDiv);
-        ReactDOM.render(<LoginWindow />, loginDiv);
-        //return false;
+
+    ReactDOM.render(<LoginWindow />,  document.getElementById('content'));
+
+    
+    //return false;
     //});
 
     /*signupButton.addEventListener('click', (e) => {
