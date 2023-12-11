@@ -163,12 +163,6 @@ const startGame = (type) => {
         setupSocket(socket);
 
 
-        // Get login.jsx
-        console.log('Works to here');
-        console.log('question');
-    }
-    else {
-
         // If the server recieves this, then the connection is successful and the player can spawn
         // The response will be the welcome call at the top of setupSocket
         socket.emit('respawn');
@@ -178,5 +172,6 @@ const startGame = (type) => {
     }
 }
 
-// This will probably be attatched to a button instead of being run immediately in the code
-startGame('player');
+export {
+    startGame,
+}

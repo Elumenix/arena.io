@@ -1,11 +1,15 @@
 const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
+const app = require('./js/app.js');
 
 const MainMenu = () => {
     return (
         <div id="mainMenu">
-            <button id="startButton" onClick={() => console.log("Clicked")}>
+            <button id="startButton" onClick={() => {
+                app.startGame('player');
+                document.querySelector('#content').hidden = true;
+            }}>
                 Start
             </button>
 
