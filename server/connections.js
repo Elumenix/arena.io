@@ -59,7 +59,7 @@ module.exports.init = () => new Promise((resolve, reject) => {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
-    app.use(session({
+    const sessionMiddleware = session({
       key: 'sessionid',
       store: new RedisStore({
         client: redisClient,
@@ -67,7 +67,9 @@ module.exports.init = () => new Promise((resolve, reject) => {
       secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
-    }));
+    });
+
+    app.use(sessionMiddleware);
 
     app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
     app.set('view engine', 'handlebars');
@@ -79,6 +81,7 @@ module.exports.init = () => new Promise((resolve, reject) => {
     const createServer = () => {
       const server = http.Server(app);
       const io = SocketIO(server);
+      io.engine.use(sessionMiddleware);
 
       return { server, io };
     };

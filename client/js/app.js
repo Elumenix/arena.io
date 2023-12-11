@@ -26,6 +26,8 @@ const setupSocket = (socket) => {
     function handleDisconnect() {
         console.log("You were disconnected from the server.");
         socket.close();
+
+        document.querySelector('#content').hidden = false;
     }
 
     socket.on('connect_error', handleDisconnect);
@@ -33,7 +35,6 @@ const setupSocket = (socket) => {
 
     socket.on('welcome', (settings, worldSize) => {
         player = settings;
-        player.name = "Lumen"; // test, this will be modifiable later
 
         // Have the player be initialized by the screensize rather than world size
         player.screenWidth = screenWidth;
@@ -122,12 +123,12 @@ const gameLoop = () => {
     ctx.globalAlpha = 0.15;
     ctx.beginPath();
 
-    for (let x = -player.x; x < screen.width; x += screen.height / 18) {
+    for (let x = -player.x; x < screen.width; x += screen.height / 15) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, screen.height);
     }
 
-    for (let y = -player.y; y < screen.height; y += screen.height / 18) {
+    for (let y = -player.y; y < screen.height; y += screen.height / 15) {
         ctx.moveTo(0, y);
         ctx.lineTo(screen.width, y);
     }

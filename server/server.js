@@ -18,19 +18,19 @@ init().then(({ createServer }) => {
 
     // This will actually run after respawn is called
     socket.on('connected', (playerInfo) => {
-      console.log(`Player '${playerInfo.name}' has connected.`);
+      console.log(`Player '${socket.request.session.account.username}' has connected.`);
 
       // return Math.floor(Math.random() * (to - from)) + from;
       currentPlayer.init(
-        Math.floor(Math.random() * 600) - 300,
-        Math.floor(Math.random() * 600) - 300,
+        Math.floor(Math.random() * 5000),
+        Math.floor(Math.random() * 5000),
       );
 
       let len = playerData.length;
 
       // Don't let the same player connect to the server twice
       while (len--) {
-        if (playerData[len].id === currentPlayer.id) {
+        if (playerData[len].name === socket.request.session.account.username) {
           console.log('This player is already connected. Rejecting new connection.');
           socket.disconnect();
           return;
@@ -38,9 +38,10 @@ init().then(({ createServer }) => {
       }
 
       // Player is allowed to join the game
-      console.log(`'${playerInfo.name}' has joined the game!`);
+      console.log(`'${socket.request.session.account.username}' has joined the game!`);
       sockets[playerInfo.id] = socket;
       currentPlayer.clientData(playerInfo);
+      currentPlayer.name = socket.request.session.account.username;
       playerData.push(currentPlayer);
     });
 
@@ -109,8 +110,6 @@ init().then(({ createServer }) => {
   // Sends the current known location of all players
   // and the game board to all currently connected clients
   const sendUpdates = () => {
-    // Update spectators
-    console.log(playerData.length);
     playerData.forEach((player) => {
       sockets[player.id].emit('movePlayer', playerData);
     });
@@ -120,9 +119,13 @@ init().then(({ createServer }) => {
     // Time limit for player sending updates
     // Disconnect them from the game if they stop responding
     if (currentPlayer.lastUpdate < new Date().getTime() - 5000) {
-      playerData.filter((player) => player !== currentPlayer);
-      console.log(playerData.length);
+      const index = playerData.indexOf(currentPlayer);
+      if (index !== -1) {
+        playerData.splice(index, 1);
+      }
+
       sockets[currentPlayer.id].emit('kick', 'Last heartbeat received over 5 seconds ago.');
+      console.log(`Player '${currentPlayer.name}' has disconnected.`);
       sockets[currentPlayer.id].disconnect();
     } else {
       currentPlayer.move();

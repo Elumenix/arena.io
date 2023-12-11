@@ -21,7 +21,7 @@ module.exports = class {
       y: 0,
     };
 
-    this.speed = 25;
+    this.speed = 10;
   }
 
   // Sets data from client needed for server side operations
