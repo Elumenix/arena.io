@@ -23,7 +23,7 @@ const login = (req, res) => {
 
     req.session.account = Account.toAPI(account);
 
-    return res.json({ redirect: '/menu' });
+    return res.status(200).json({ loggedIn: true });
   });
 };
 
@@ -42,16 +42,11 @@ const signup = async (req, res) => {
   }
 
   try {
-    console.log('Check 1');
     const hash = await Account.generateHash(pass);
-    console.log('Check 2');
     const newAccount = new Account({ username, password: hash });
-    console.log('Check 3');
     await newAccount.save();
-    console.log('Check 4');
     req.session.account = Account.toAPI(newAccount);
-    console.log('Check 5');
-    return res.json({ redirect: '/menu' });
+    return res.status(200).json({ loggedIn: true });
   } catch (err) {
     if (err.code === 11000) {
       return res.status(400).json({ error: 'Username already in use!' });

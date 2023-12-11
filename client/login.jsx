@@ -2,7 +2,28 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const handleLogin = (e) => {
+const MainMenu = () => {
+    return (
+        <div id="mainMenu">
+            <button id="startButton" onClick={() => console.log("Clicked")}>
+                Start
+            </button>
+
+            <button id="logoutButton" onClick={(e) => {
+                e.preventDefault();
+                fetch('/logout'); // sign user out
+
+                // Bring back the login menu
+                document.querySelector('#loginScreen').hidden = false;
+                document.querySelector('#mainMenu').hidden = true;
+            }}>
+                Log Out
+            </button>
+        </div>
+    );
+}
+
+const handleLogin = async (e) => {
     e.preventDefault();
     helper.hideError();
 
@@ -14,12 +35,20 @@ const handleLogin = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, { username, pass });
+    const result = await helper.sendPost(e.target.action, { username, pass });
+
+    console.log(result);
+
+    if (result.loggedIn) {
+        document.querySelector("#loginScreen").hidden = true;
+        ReactDOM.render(<MainMenu />, document.getElementById('content'));
+        document.querySelector('#mainMenu').hidden = false;
+    }
 
     return false;
 }
 
-const handleSignup = (e) => {
+const handleSignup = async (e) => {
     e.preventDefault();
     helper.hideError();
 
@@ -37,7 +66,13 @@ const handleSignup = (e) => {
         return false;
     }
 
-    helper.sendPost(e.target.action, { username, pass, pass2 });
+    const result = await helper.sendPost(e.target.action, { username, pass, pass2 });
+
+    if (result.loggedIn) {
+        document.querySelector("#loginScreen").hidden = true;
+        ReactDOM.render(<MainMenu />, document.getElementById('content'));
+        document.querySelector('#mainMenu').hidden = false;
+    }
 
     return false;
 }
@@ -80,41 +115,24 @@ const SignupForm = (props) => {
     );
 };
 
-
-
 const LoginWindow = () => {
     const [isLogin, setIsLogin] = React.useState(true);
     const [isUserLoggedIn, setIsUserLoggedIn] = React.useState(false);
 
-
-    /*const checkLoginStatus = () => {
-        return fetch('/menu')
-            .then((response) => response.json())
-            .then(async (data) => {
-                if (data.loggedIn === true) {
-                    await setIsUserLoggedIn(true);
-                } else {
-                    await setIsUserLoggedIn(false);
-                }
-            });
-    };*/
-
     // On the first frame of this being rendered, client checks if user is logged in
-    React.useEffect(async () => {
-        await fetch('/menu')
-            .then((response) => response.json())
-            .then(async (data) => {
-                if (data.loggedIn === true) {
-                    document.querySelector("#loginWindow").hidden = true;
-
-                    await setIsUserLoggedIn(true);
-                } else {
-                    await setIsUserLoggedIn(false);
-                }
-            });
-
-        
-
+    React.useEffect(() => {
+        const checkLoginStatus = async () => {
+            const response = await fetch('/menu');
+            const data = await response.json();
+            if (data.loggedIn === true) {
+                document.querySelector("#loginScreen").hidden = true;
+                ReactDOM.render(<MainMenu />, document.getElementById('content'));
+                setIsUserLoggedIn(true);
+            } else {
+                setIsUserLoggedIn(false);
+            }
+        };
+        checkLoginStatus();
     }, []);
 
     return (
@@ -133,29 +151,7 @@ const LoginWindow = () => {
 }
 
 const init = () => {
-    //const loginButton = document.getElementById('loginButton');
-    //const signupButton = document.getElementById('signupButton');
-
-    /*loginButton.addEventListener('click', (e) => {
-        e.preventDefault();*/
-
-    ReactDOM.render(<LoginWindow />, document.getElementById('content'));
-
-
-    //return false;
-    //});
-
-    /*signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const signupDiv = document.createElement('div');
-        document.getElementById('content').appendChild(signupDiv);
-        ReactDOM.render(<SignupWindow />, signupDiv);
-        return false;
-    });
-
-    const initialDiv = document.createElement('div');
-    document.getElementById('content').appendChild(initialDiv);
-    ReactDOM.render(<LoginWindow />, initialDiv);*/
+    ReactDOM.render(<LoginWindow />, document.getElementById('loginScreen'));
 };
 
 init();
