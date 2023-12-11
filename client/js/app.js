@@ -18,6 +18,7 @@ var player = {
 };
 
 var otherPlayers = [];
+var explosions = [];
 
 const setupSocket = (socket) => {
     // saved so that the update method can work
@@ -58,10 +59,7 @@ const setupSocket = (socket) => {
     }
 
 
-    socket.on('movePlayer', (playerData) => {
-        //console.log(player.id)
-        //console.log(playerData);
-
+    socket.on('movePlayer', (playerData, booms) => {
         let index = playerData.findIndex((current) => current.id === player.id);
 
         if (index !== -1) {
@@ -70,15 +68,7 @@ const setupSocket = (socket) => {
         }
 
         player = playerData[0];
-        //console.log(player);
-
-        /*if (player.type === 'player') {
-            player.x = playerData.x;
-            player.y = playerData.y;
-            player.hue = playerData.hue;
-        }*/
-
-        //console.log(otherPlayers);
+        explosions = booms;
     });
 
     socket.on('kick', (reason) => {
@@ -139,7 +129,6 @@ const gameLoop = () => {
 
 
     // Draw other players
-    ctx.fillStyle = "#FF0000";
     // TODO: Create a draw method for circles
 
     if (otherPlayers) {
@@ -147,6 +136,7 @@ const gameLoop = () => {
             ctx.beginPath();
             ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, 10, 0, 2 * Math.PI);
             ctx.closePath();
+            ctx.fillStyle = opponent.color;
             ctx.fill();
             ctx.stroke();
         });
@@ -158,8 +148,21 @@ const gameLoop = () => {
     ctx.arc(screenWidth / 2, screenHeight / 2, 10, 0, 2 * Math.PI);
     //console.log(`(${player.x}, ${player.y})`);
     ctx.closePath();
+    ctx.fillStyle = player.color;
     ctx.fill();
     ctx.stroke();
+
+
+    // draw explosions
+    explosions.forEach((bomb) => {
+        ctx.fillStyle = bomb.color;
+        ctx.beginPath();
+        ctx.arc(bomb.x - player.x + screenWidth / 2, bomb.y - player.y + screenHeight / 2, 
+        bomb.size, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fillStyle = `${bomb.color}${bomb.opacity}`;
+        ctx.fill();
+    });
 
 
     // The client should send it's current position back to the server. This only actually transmits movement input information

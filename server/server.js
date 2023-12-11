@@ -1,6 +1,7 @@
 // connections will set up the database connections for the server
 const { init } = require('./connections');
 const Player = require('./player');
+const Explosion = require('./explosion');
 
 // Credit for the basic setup of a socket server can be found here: https://github.com/owenashurst/agar.io-clone/blob/master/
 
@@ -11,6 +12,8 @@ init().then(({ createServer }) => {
 
   const sockets = {};
   const playerData = [];
+  const explosions = [];
+  let lastUpdate = new Date().getTime();
 
   // Individual player functions are within this block
   const addPlayer = (socket) => {
@@ -111,7 +114,7 @@ init().then(({ createServer }) => {
   // and the game board to all currently connected clients
   const sendUpdates = () => {
     playerData.forEach((player) => {
-      sockets[player.id].emit('movePlayer', playerData);
+      sockets[player.id].emit('movePlayer', playerData, explosions);
     });
   };
 
@@ -133,9 +136,30 @@ init().then(({ createServer }) => {
   };
 
   const tickGame = () => {
+    const deltaTime = (new Date().getTime() - lastUpdate) / 1000;
+
+    explosions.forEach((currentExplosion) => {
+      // if explosion has finished, remove from list
+      if (currentExplosion.update(deltaTime)) {
+        const index = explosions.indexOf(currentExplosion);
+        if (index !== -1) {
+          explosions.splice(index, 1);
+        }
+      }
+    });
+
+    // Only spawn new explosions if players are in the game, don't wear down server
+    if (playerData.length > 0) {
+      if (Math.random() * 100 > 0.66) { // ~ 20 spawn per second {
+        explosions.push(new Explosion());
+      }
+    }
+
     playerData.forEach((player) => {
       tickPlayer(player);
     });
+
+    lastUpdate = new Date().getTime();
   };
 
   setInterval(sendUpdates, 25);

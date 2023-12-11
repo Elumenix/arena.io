@@ -23,6 +23,10 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  longestAliveTime: {
+    type: Number,
+    default: 0, // Default value can be 0, assuming the time is tracked in seconds
+  },
 });
 
 // Redis version

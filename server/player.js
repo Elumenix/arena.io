@@ -1,6 +1,13 @@
 // const MAX_SPEED = 4;
 // const SPEED_DECREMENT = 0.5;
 
+const getRandomPastelColor = () => {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = Math.floor(Math.random() * 30 + 70); // Saturation between 70 and 100
+  const lightness = Math.floor(Math.random() * 20 + 80); // Lightness between 80 and 100
+  return `hsla(${hue}, ${saturation}%, ${lightness}%, 1`;
+};
+
 module.exports = class {
   constructor(id) {
     this.id = id;
@@ -8,6 +15,7 @@ module.exports = class {
     this.name = null;
     this.screenWidth = null;
     this.screenHeight = null;
+    this.color = getRandomPastelColor();
   }
 
   // Sets the initial data for the player in the game world
