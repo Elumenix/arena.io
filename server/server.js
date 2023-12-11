@@ -2,6 +2,8 @@
 const { init } = require('./connections');
 const Player = require('./player');
 
+// Credit for the basic setup of a socket server can be found here: https://github.com/owenashurst/agar.io-clone/blob/master/
+
 // Connect to all the databases, then continue
 init().then(({ createServer }) => {
   // The game servers get created
@@ -108,13 +110,33 @@ init().then(({ createServer }) => {
   // and the game board to all currently connected clients
   const sendUpdates = () => {
     // Update spectators
+    console.log(playerData.length);
     playerData.forEach((player) => {
-      player.move();
       sockets[player.id].emit('movePlayer', playerData);
     });
   };
 
+  const tickPlayer = (currentPlayer) => {
+    // Time limit for player sending updates
+    // Disconnect them from the game if they stop responding
+    if (currentPlayer.lastUpdate < new Date().getTime() - 5000) {
+      playerData.filter((player) => player !== currentPlayer);
+      console.log(playerData.length);
+      sockets[currentPlayer.id].emit('kick', 'Last heartbeat received over 5 seconds ago.');
+      sockets[currentPlayer.id].disconnect();
+    } else {
+      currentPlayer.move();
+    }
+  };
+
+  const tickGame = () => {
+    playerData.forEach((player) => {
+      tickPlayer(player);
+    });
+  };
+
   setInterval(sendUpdates, 25);
+  setInterval(tickGame, 1000 / 60);
 
   const ipaddress = process.env.IP || process.env.NODE_IP || '0.0.0.0';
   const serverport = process.env.PORT || process.env.NODE_PORT || 3000;

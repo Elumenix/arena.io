@@ -23,6 +23,14 @@ const setupSocket = (socket) => {
     // saved so that the update method can work
     playerSocket = socket;
 
+    function handleDisconnect() {
+        console.log("You were disconnected from the server.");
+        socket.close();
+    }
+
+    socket.on('connect_error', handleDisconnect);
+    socket.on('disconnect', handleDisconnect);
+
     socket.on('welcome', (settings, worldSize) => {
         player = settings;
         player.name = "Lumen"; // test, this will be modifiable later
@@ -71,6 +79,11 @@ const setupSocket = (socket) => {
 
         //console.log(otherPlayers);
     });
+
+    socket.on('kick', (reason) => {
+        console.log(`You were kicked.\nReason: ${reason}`);
+        socket.close();
+    })
 }
 
 
