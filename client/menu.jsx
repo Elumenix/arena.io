@@ -2,7 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const app = require('./js/app.js');
-import {Leaderboard} from './ui.jsx'
+import { Leaderboard } from './ui.jsx'
 
 const MainMenu = () => {
     return (
@@ -11,6 +11,7 @@ const MainMenu = () => {
                 app.startGame('player');
                 document.querySelector('#content').hidden = true;
                 document.querySelector('#leaderBoard').style.display = 'block';
+                document.querySelector('#scoreWindow').hidden = true;
                 ReactDOM.render(<Leaderboard />, document.getElementById('leaderBoard'));
             }}>
                 Start
@@ -30,6 +31,23 @@ const MainMenu = () => {
     );
 }
 
+const GameOverWindow = () => {
+    return (
+        <div id="menuItem">
+            <div id="gameOver">
+                <p>Your score for that game was: {app.score}</p>
+            </div>
+            <div id="highScore">
+                <p>Your <b>High Score</b> is: {app.finalScore}</p>
+            </div>
+        </div>
+    )
+}
+
+const ShowGameWindow = () => {
+    ReactDOM.render(<GameOverWindow />, document.getElementById('scoreWindow'));
+}
+
 const handleLogin = async (e) => {
     e.preventDefault();
     helper.hideError();
@@ -44,11 +62,26 @@ const handleLogin = async (e) => {
 
     const result = await helper.sendPost(e.target.action, { username, pass });
 
-    console.log(result);
 
     if (result.loggedIn) {
         document.querySelector("#loginScreen").hidden = true;
         ReactDOM.render(<MainMenu />, document.getElementById('content'));
+        fetch('/updateHighScore', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: app.player.name, score: app.score }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                app.changeFinalScore(data.score);
+                ReactDOM.render(<GameOverWindow />, document.getElementById('scoreWindow'));
+                document.querySelector('#gameOver').hidden = true;
+            });
+
+
+
         document.querySelector('#mainMenu').hidden = false;
     }
 
@@ -78,6 +111,20 @@ const handleSignup = async (e) => {
     if (result.loggedIn) {
         document.querySelector("#loginScreen").hidden = true;
         ReactDOM.render(<MainMenu />, document.getElementById('content'));
+        fetch('/updateHighScore', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: app.player.name, score: app.score }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                app.changeFinalScore(data.score);
+                ReactDOM.render(<GameOverWindow />, document.getElementById('scoreWindow'));
+                document.querySelector('#gameOver').hidden = true;
+            });
+
         document.querySelector('#mainMenu').hidden = false;
     }
 
@@ -133,6 +180,20 @@ const LoginWindow = () => {
             const data = await response.json();
             if (data.loggedIn === true) {
                 document.querySelector("#loginScreen").hidden = true;
+                fetch('/updateHighScore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username: app.player.name, score: app.score }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        app.changeFinalScore(data.score);
+                        ReactDOM.render(<GameOverWindow />, document.getElementById('scoreWindow'));
+                        document.querySelector('#gameOver').hidden = true;
+                    });
+
                 ReactDOM.render(<MainMenu />, document.getElementById('content'));
                 setIsUserLoggedIn(true);
             } else {
@@ -162,3 +223,7 @@ const init = () => {
 };
 
 init();
+
+export {
+    ShowGameWindow,
+}

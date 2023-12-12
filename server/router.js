@@ -16,6 +16,8 @@ const router = (app) => {
     return res.status(200).json({ loggedIn: false });
   });
 
+  app.post('/updateHighScore', mid.requiresLogin, account.updateHigh);
+
   app.get('/', mid.requiresSecure, (req, res) => res.render('index'));
 };
 

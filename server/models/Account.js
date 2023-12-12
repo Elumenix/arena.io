@@ -23,9 +23,9 @@ const AccountSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  longestAliveTime: {
+  highScore: {
     type: Number,
-    default: 0, // Default value can be 0, assuming the time is tracked in seconds
+    default: 0,
   },
 });
 

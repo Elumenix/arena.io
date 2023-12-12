@@ -65,3 +65,9 @@ body {
     min-height: 200px;
     background: rgba(120, 120, 120, .4);
 }
+
+#scoreWindow {
+    position: absolute;
+    top: 50%;
+    left: 0;
+}

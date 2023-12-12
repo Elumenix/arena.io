@@ -1,3 +1,4 @@
+import { ShowGameWindow } from '../menu.jsx';
 import { ctx, mousePos } from './canvas.js';
 var io = require('socket.io-client');
 
@@ -19,6 +20,8 @@ var player = {
 
 var otherPlayers = [];
 var explosions = [];
+var score = 0;
+var finalScore = 0;
 
 const setupSocket = (socket) => {
     // saved so that the update method can work
@@ -68,6 +71,7 @@ const setupSocket = (socket) => {
         }
 
         player = playerData[0];
+        score = Math.round((Date.now() - player.startTime) / 100);
         explosions = booms;
     });
 
@@ -80,6 +84,23 @@ const setupSocket = (socket) => {
         setTimeout(() => {
             document.querySelector('#content').hidden = false;
             loopHandler = null;
+
+            fetch('/updateHighScore', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: player.name, score: score }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    finalScore = data.score;
+                    ShowGameWindow();
+                });
+
+
+            document.querySelector('#scoreWindow').hidden = false;
+            document.querySelector('#gameOver').hidden = false;
         });
     }, 1000);
 }
@@ -164,8 +185,8 @@ const gameLoop = () => {
     explosions.forEach((bomb) => {
         ctx.fillStyle = bomb.color;
         ctx.beginPath();
-        ctx.arc(bomb.x - player.x + screenWidth / 2, bomb.y - player.y + screenHeight / 2, 
-        bomb.size, 0, 2 * Math.PI);
+        ctx.arc(bomb.x - player.x + screenWidth / 2, bomb.y - player.y + screenHeight / 2,
+            bomb.size, 0, 2 * Math.PI);
         ctx.closePath();
         ctx.fillStyle = `${bomb.color}${bomb.opacity}`;
         ctx.fill();
@@ -200,7 +221,15 @@ const startGame = (type) => {
     }
 }
 
+const changeFinalScore = (newValue) => {
+    finalScore = newValue;
+}
+
 export {
     startGame,
+    changeFinalScore,
     playerSocket,
+    score,
+    finalScore,
+    player,
 }

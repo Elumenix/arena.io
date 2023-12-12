@@ -28,7 +28,6 @@ const login = (req, res) => {
 };
 
 const signup = async (req, res) => {
-  console.log(Account);
   const username = `${req.body.username}`;
   const pass = `${req.body.pass}`;
   const pass2 = `${req.body.pass2}`;
@@ -55,8 +54,33 @@ const signup = async (req, res) => {
   }
 };
 
+const updateHigh = async (req, res) => {
+  const username = `${req.body.username}`;
+  const score = `${req.body.score}`;
+
+  try {
+    const account = await Account.findOne({ username });
+    if (!account) {
+      return res.status(400).json({ error: 'No account found for this username!' });
+    }
+
+    if (score > account.highScore) {
+      account.highScore = score;
+      await account.save();
+      return res.status(200).json({ message: 'High score updated successfully!', score });
+    }
+    return res.status(200).json({
+      message: 'Score is not higher than the current high score.',
+      score: account.highScore,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'An error occurred!' });
+  }
+};
+
 module.exports = {
   login,
   logout,
   signup,
+  updateHigh,
 };
