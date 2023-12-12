@@ -68,6 +68,9 @@ init().then(({ createServer }) => {
       if (existed) {
         console.log(`'${currentPlayer.name}' has respawned!`);
       }
+
+      currentPlayer.startTime = Date.now();
+      currentPlayer.score = 0;
     });
 
     // The server recieves the players current location from the client and updates it internally
@@ -132,6 +135,7 @@ init().then(({ createServer }) => {
       sockets[currentPlayer.id].disconnect();
     } else {
       currentPlayer.move();
+      sockets[currentPlayer.id].emit('update leaderboard', playerData);
 
       const playerRadiusSq = currentPlayer.radius * currentPlayer.radius;
 

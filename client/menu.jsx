@@ -2,6 +2,7 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 const app = require('./js/app.js');
+import {Leaderboard} from './ui.jsx'
 
 const MainMenu = () => {
     return (
@@ -9,6 +10,8 @@ const MainMenu = () => {
             <button id="startButton" onClick={() => {
                 app.startGame('player');
                 document.querySelector('#content').hidden = true;
+                document.querySelector('#leaderBoard').style.display = 'block';
+                ReactDOM.render(<Leaderboard />, document.getElementById('leaderBoard'));
             }}>
                 Start
             </button>

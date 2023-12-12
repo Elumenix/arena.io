@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
     entry: {
-        app: ['./client/js/app.js', './client/login.jsx'],
+        app: ['./client/js/app.js', './client/menu.jsx', './client/ui.jsx'],
     },
     module: {
         rules: [

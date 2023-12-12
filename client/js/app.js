@@ -202,4 +202,5 @@ const startGame = (type) => {
 
 export {
     startGame,
+    playerSocket,
 }
