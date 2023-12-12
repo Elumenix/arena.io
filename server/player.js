@@ -30,6 +30,7 @@ module.exports = class {
     };
 
     this.speed = 10;
+    this.radius = 10;
   }
 
   // Sets data from client needed for server side operations

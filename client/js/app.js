@@ -56,7 +56,7 @@ const setupSocket = (socket) => {
         ctx.canvas.height = player.screenHeight = screenHeight = window.innerHeight;
 
         socket.emit('windowResized', { screenWidth: screenWidth, screenHeight: screenHeight });
-    }
+    };
 
 
     socket.on('movePlayer', (playerData, booms) => {
@@ -74,7 +74,14 @@ const setupSocket = (socket) => {
     socket.on('kick', (reason) => {
         console.log(`You were kicked.\nReason: ${reason}`);
         socket.close();
-    })
+    });
+
+    socket.on('death', () => {
+        setTimeout(() => {
+            document.querySelector('#content').hidden = false;
+            loopHandler = null;
+        });
+    }, 1000);
 }
 
 
@@ -134,7 +141,7 @@ const gameLoop = () => {
     if (otherPlayers) {
         otherPlayers.forEach((opponent) => {
             ctx.beginPath();
-            ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, 10, 0, 2 * Math.PI);
+            ctx.arc(opponent.x - player.x + screenWidth / 2, opponent.y - player.y + screenHeight / 2, opponent.radius, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fillStyle = opponent.color;
             ctx.fill();
@@ -145,7 +152,7 @@ const gameLoop = () => {
 
     // draw current player
     ctx.beginPath();
-    ctx.arc(screenWidth / 2, screenHeight / 2, 10, 0, 2 * Math.PI);
+    ctx.arc(screenWidth / 2, screenHeight / 2, player.radius, 0, 2 * Math.PI);
     //console.log(`(${player.x}, ${player.y})`);
     ctx.closePath();
     ctx.fillStyle = player.color;
@@ -186,6 +193,10 @@ const startGame = (type) => {
 
         // Start the animation loop
         gameLoop();
+    }
+    else {
+        // Simply respawn the player
+        socket.emit('respawn');
     }
 }
 

@@ -17,7 +17,7 @@ init().then(({ createServer }) => {
 
   // Individual player functions are within this block
   const addPlayer = (socket) => {
-    const currentPlayer = new Player(socket.id);
+    const currentPlayer = new Player(socket.request.session.account._id);
 
     // This will actually run after respawn is called
     socket.on('connected', (playerInfo) => {
@@ -132,6 +132,31 @@ init().then(({ createServer }) => {
       sockets[currentPlayer.id].disconnect();
     } else {
       currentPlayer.move();
+
+      const playerRadiusSq = currentPlayer.radius * currentPlayer.radius;
+
+      explosions.forEach((bomb) => {
+        if (bomb.size <= 20 || bomb.opacity <= 0.5) {
+          return;
+        }
+
+        const dx = bomb.x - currentPlayer.x;
+        const dy = bomb.y - currentPlayer.y;
+        const distSq = dx * dx + dy * dy;
+        const bombSizeSq = bomb.size * bomb.size;
+
+        // confirmed collision
+        if (distSq < playerRadiusSq + bombSizeSq) {
+          sockets[currentPlayer.id].emit('death');
+          console.log(`${currentPlayer.name} has perished.`);
+
+          // Remove player from game world
+          const index = playerData.indexOf(currentPlayer);
+          if (index !== -1) {
+            playerData.splice(index, 1);
+          }
+        }
+      });
     }
   };
 
